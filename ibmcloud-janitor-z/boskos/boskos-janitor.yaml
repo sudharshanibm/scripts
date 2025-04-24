@@ -13,7 +13,7 @@ metadata:
 spec:
   provider:
     ibm:
-      serviceUrl: "https://bcc32de5-df5b-467a-b1f7-87d058e6044d.eu-de.secrets-manager.appdomain.cloud"
+      serviceUrl: "https://14b6945e-4b53-43a5-ba1d-9ea632f4cba6.eu-de.secrets-manager.appdomain.cloud"
       auth:
         secretRef:
           secretApiKeySecretRef:
@@ -37,7 +37,7 @@ spec:
   data:
   - secretKey: key
     remoteRef:
-      key: 7838e4f2-1cee-8ae3-062f-257e0f4b2471
+      key: 88c109f4-cec6-b46f-1b14-909cdd6dfa48
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,7 +57,7 @@ spec:
       terminationGracePeriodSeconds: 300
       containers:
       - name: boskos-janitor-ibmcloud
-        image: gcr.io/k8s-staging-boskos/ibmcloud-janitor-boskos:latest
+        image: quay.io/smuralid/ibmcloud-janitor-boskos:latest
         args:
         - --boskos-url=http://boskos.test-pods.svc.cluster.local.
         - --debug
