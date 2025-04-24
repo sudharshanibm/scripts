@@ -20,8 +20,8 @@ if [ "$CRD_COUNT" -eq 0 ]; then
     echo "External Secrets CRDs not found. Installing..."
     helm repo add external-secrets https://charts.external-secrets.io
     helm repo update
-    helm install external-secrets \
-        external-secrets/external-secrets \
+    kubectl create namespace external-secrets || true
+    helm install external-secrets external-secrets/external-secrets \
         -n external-secrets \
         --create-namespace \
         --set installCRDs=true \
@@ -30,12 +30,12 @@ if [ "$CRD_COUNT" -eq 0 ]; then
 
     echo "Waiting for external-secrets-webhook service to be ready..."
     for i in {1..60}; do
-    if kubectl get svc external-secrets-webhook -n external-secrets &>/dev/null; then
-        echo "external-secrets-webhook service is ready."
-        break
-    fi
-    echo "Waiting for external-secrets-webhook service... ($i/60)"
-    sleep 5
+        if kubectl get svc external-secrets-webhook -n external-secrets &>/dev/null; then
+            echo "external-secrets-webhook service is ready."
+            break
+        fi
+        echo "Waiting for external-secrets-webhook service... ($i/60)"
+        sleep 5
     done
 else
     echo "External Secrets CRDs already installed."
