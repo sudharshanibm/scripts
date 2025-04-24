@@ -27,18 +27,31 @@ if [ "$CRD_COUNT" -eq 0 ]; then
         --set installCRDs=true \
         --wait \
         --timeout 5m
-
-    echo "Waiting for external-secrets-webhook service to be ready..."
-    for i in {1..60}; do
-        if kubectl get svc external-secrets-webhook -n external-secrets &>/dev/null; then
-            echo "external-secrets-webhook service is ready."
-            break
-        fi
-        echo "Waiting for external-secrets-webhook service... ($i/60)"
-        sleep 5
-    done
 else
     echo "External Secrets CRDs already installed."
+fi
+
+# Wait for webhook to be ready
+echo "Waiting for external-secrets-webhook to be ready..."
+WEBHOOK_READY=false
+for i in $(seq 1 60); do
+    if kubectl get deployment external-secrets-webhook -n external-secrets &>/dev/null; then
+        if kubectl rollout status deployment external-secrets-webhook -n external-secrets --timeout=5s &>/dev/null; then
+            WEBHOOK_READY=true
+            break
+        fi
+    fi
+    echo "Waiting for external-secrets-webhook to be ready... ($i/60)"
+    sleep 5
+done
+
+if [ "$WEBHOOK_READY" = false ]; then
+    echo "Error: external-secrets-webhook did not become ready in time."
+    echo "Debug information:"
+    kubectl get pods -n external-secrets
+    kubectl get deployments -n external-secrets
+    kubectl describe deployment external-secrets-webhook -n external-secrets || true
+    exit 1
 fi
 
 echo "Ensuring namespace '$NAMESPACE' exists..."
