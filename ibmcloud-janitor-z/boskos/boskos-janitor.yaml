@@ -57,7 +57,7 @@ spec:
       terminationGracePeriodSeconds: 300
       containers:
       - name: boskos-janitor-ibmcloud
-        image: gcr.io/k8s-staging-boskos/ibmcloud-janitor-boskos:latest
+        image: gcr.io/k8s-staging-boskos/ibmcloud-janitor-boskos:v20260107-c2c6f43
         args:
         - --boskos-url=http://boskos.test-pods.svc.cluster.local.
         - --debug

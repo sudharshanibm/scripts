@@ -9,5 +9,4 @@ data:
       - type: "vpc-service"
         state: free
         names:
-          - "boskos-test-vpc"
-          - "s390x-k8s-conformance"
+          - "k8s-s390x-test-vpc"
